@@ -13,13 +13,15 @@ st.set_page_config(
 st.title("Análise de Veículos Consultados")
 st.markdown("Use este painel para analisar os dados de consultas de veículos exportados.")
 
-# --- Constantes ---
+# --- Constantes (CORRIGIDAS) ---
+# Listas limpas, sem caracteres de espaço inválidos
 EXPECTED_COLS = [
-    'Placa', 'UfJurisidicao', 'AnoFabricacao', 'COMBUSTIVEL', 
+    'Placa', 'UfJurisidicao', 'AnoFabricacao', 'COMBUSTIVEL',
     'COR', 'Nome', 'TIPOVEICULO'
 ]
+
 NORMALIZED_COLS = [
-    'placa', 'ufjurisidicao', 'anofabricacao', 'combustivel', 
+    'placa', 'ufjurisidicao', 'anofabricacao', 'combustivel',
     'cor', 'nome', 'tipoveiculo'
 ]
 
@@ -64,6 +66,11 @@ def load_and_process_data(file):
         
         # 2. Criar 'idade' (ano atual - ano de fabricação)
         current_year = datetime.datetime.now().year
+        # Garante que anofabricacao seja numérico, tratando erros
+        df['anofabricacao'] = pd.to_numeric(df['anofabricacao'], errors='coerce')
+        df.dropna(subset=['anofabricacao'], inplace=True) # Remove linhas onde o ano não pôde ser lido
+        df['anofabricacao'] = df['anofabricacao'].astype(int)
+        
         df['idade'] = current_year - df['anofabricacao']
         
         st.success("Arquivo carregado e processado com sucesso!")
@@ -250,9 +257,10 @@ if st.session_state.data_loaded and st.session_state.data is not None:
         st.download_button(
             label="Baixar CSV filtrado",
             data=csv_data,
-            file_name=f"checars_dados_filtrados_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+            file_name=f"dados_filtrados_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
             mime='text/csv',
         )
 
 elif not st.session_state.data_loaded:
     st.info("Por favor, envie um arquivo .csv ou .xlsx e clique em 'Carregar dados' para iniciar a análise.")
+
