@@ -6,12 +6,12 @@ import datetime
 # --- Configuração da Página ---
 st.set_page_config(
     layout="wide",
-    page_title="Checars • Análise de Consultas Veiculares"
+    page_title="Análise de Consultas Veiculares"
 )
 
 # --- Título da Aplicação ---
-st.title("Checars • Análise de Veículos Consultados")
-st.markdown("Use este painel para analisar os dados de consultas de veículos exportados do app Checars.")
+st.title("Análise de Veículos Consultados")
+st.markdown("Use este painel para analisar os dados de consultas de veículos exportados.")
 
 # --- Constantes ---
 EXPECTED_COLS = [
